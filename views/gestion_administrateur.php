@@ -8,7 +8,7 @@ require '../Classes/Administrateur.php';
 session_start();
 
 if(!isset($_SESSION['ID'])){
-    header('location: ../public/login.php');
+    header('location: ../templates/login.php');
     exit();
 }
 
