@@ -5,11 +5,8 @@ require '../Classes/Visiteur.php';
  
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-
-    $db = new Database();
-    $conn = $db->getConnection(); 
-
-    $client = new Visiteur($conn);
+ 
+    $client = new Visiteur($nom, $prenom, $role, $telephone, $email, $mot_de_passe, $photo);
 
     $client->setNom($nom = $_POST['nom']);
     $client->setPrenom($prenom = $_POST['prenom']);
