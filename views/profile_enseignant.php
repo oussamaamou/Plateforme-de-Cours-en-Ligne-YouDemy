@@ -15,7 +15,7 @@ $ID = $_SESSION['ID'];
 $db = new Database();
 $conn = $db->getConnection(); 
 
-$auteur = new Enseignant($conn);
+$auteur = new Enseignant("","","","","","","",$conn);
 
 $profile = $auteur->profileInfos($ID);
 
