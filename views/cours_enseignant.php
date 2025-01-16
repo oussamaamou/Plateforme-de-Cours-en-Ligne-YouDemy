@@ -7,14 +7,12 @@ require '../Classes/Cours.php';
 session_start();
 
 if(!isset($_SESSION['ID'])){
-    header('location: ../public/login.php');
+    header('location: ../templates/login.php');
     exit();
 }
 
-$db = new Database();
-$conn = $db->getConnection();
-$categorie = new Categorie($conn);
-$cours = new Cours($conn);
+$categorie = new Categorie("");
+$cours = new Cours("", "", "", "", "", "", "");
 $categoriess = $categorie->getAllCategorie();
 
 
@@ -49,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $cours->creerCours($titre, $description, $type, $contenu, $thumbnail, $ID_enseignant, $ID_categorie);
+    $cours->creerCours($ID_enseignant, $ID_categorie, $titre, $contenu, $thumbnail, $description, $type);
 }
 
 
