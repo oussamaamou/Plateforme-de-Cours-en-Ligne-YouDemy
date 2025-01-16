@@ -5,8 +5,9 @@ class Categorie {
     private $conn;
     private $nom;
 
-    public function __construct($conn){
-        $this->conn = $conn;
+    public function __construct($nom){
+        $this->nom = $nom;
+        $this->conn = new Database();
     }
 
     public function setNom($nom){
@@ -21,7 +22,7 @@ class Categorie {
 
         $sql = ("INSERT INTO categories (Nom) VALUES (:nom)");
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->getConnection()->prepare($sql);
         $stmt->bindParam(':nom', $this->nom, PDO::PARAM_STR);
 
         return $stmt->execute();
@@ -29,7 +30,7 @@ class Categorie {
 
     public function supprimerCategorie($id){
 
-        $stmt = $this->conn->prepare("DELETE FROM categorie WHERE ID = :id");
+        $stmt = $this->conn->getConnection()->prepare("DELETE FROM categorie WHERE ID = :id");
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         
@@ -40,7 +41,7 @@ class Categorie {
     public function getAllCategorie(){
         try{ 
             $sql = ("SELECT * FROM categories");
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->conn->getConnection()->prepare($sql);
             
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
