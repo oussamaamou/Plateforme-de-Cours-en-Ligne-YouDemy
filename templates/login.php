@@ -8,10 +8,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $db = new Database();
-    $conn = $db->getConnection(); 
-
-    $client = new Etudiant($conn);
+    $client = new Etudiant("","","","","","","");
     
     $client->setEmail($email = $_POST['email']);
     $mot_de_passe = $_POST['mot_de_passe'];
