@@ -12,8 +12,15 @@ abstract class Utilisateur {
     private $conn;
 
 
-    public function __construct($conn) {
-        $this->conn = $conn;
+    public function __construct($nom, $prenom, $role, $telephone, $email, $mot_de_passe, $photo) {
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->role = $role;
+        $this->telephone = $telephone;
+        $this->email = $email;
+        $this->mot_de_passe = $mot_de_passe;
+        $this->photo = $photo;
+        $this->conn = new Database();
     }
 
     public function setNom($nom) {
@@ -77,7 +84,7 @@ abstract class Utilisateur {
 
         $sql = "INSERT INTO utilisateurs (Nom, Prenom, Photo, Telephone, Email, Mot_de_passe, Role) 
                 VALUES (:nom, :prenom, :photo, :telephone, :email, :mot_de_passe, :role)";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->getConnection()->prepare($sql);
 
         $stmt->bindParam(':nom', $this->nom, PDO::PARAM_STR);
         $stmt->bindParam(':prenom', $this->prenom, PDO::PARAM_STR);
@@ -93,7 +100,7 @@ abstract class Utilisateur {
 
     public function loginUtilisateur($email, $mot_de_passe) {
         $sql = "SELECT * FROM utilisateurs WHERE Email = :email"; 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->getConnection()->prepare($sql);
     
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     
@@ -138,7 +145,7 @@ abstract class Utilisateur {
     public function profileInfos($id) {
         try {
             $sql = "SELECT Nom, Prenom, Photo, Role, Telephone, Email FROM utilisateurs WHERE ID = :id";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $this->conn->getConnection()->prepare($sql);
 
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
