@@ -11,8 +11,15 @@ class Cours {
     private $type;
     private $conn;
 
-    public function __construct($conn) {
-        $this->conn = $conn;
+    public function __construct($ID_enseignant, $ID_categorie, $titre, $contenu, $thumbnail, $description, $type) {
+        $this->ID_enseignant = $ID_enseignant;
+        $this->ID_categorie = $ID_categorie;
+        $this->titre = $titre;
+        $this->contenu = $contenu;
+        $this->thumbnail = $thumbnail;
+        $this->description = $description;
+        $this->type = $type;
+        $this->conn = new Database();
     }
 
     public function setEnseignant($ID_enseignant) {
@@ -75,7 +82,7 @@ class Cours {
         $sql = "INSERT INTO cours (Titre, Description, Type, Contenu, Thumbnail, Enseignant_id, Categorie_id)
                 VALUES (:titre, :description, :type, :contenu, :thumbnail, :Enseignant_id, :Categorie_id)";
         
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->getConnection()->prepare($sql);
 
         $stmt->bindParam(':Enseignant_id', $this->ID_enseignant, PDO::PARAM_INT);
         $stmt->bindParam(':Categorie_id', $this->ID_categorie, PDO::PARAM_INT);
@@ -90,11 +97,12 @@ class Cours {
 
     public function getAllCours() {
         try {
-            $stmt = $this->conn->prepare(
+            $stmt = $this->conn->getConnection()->prepare(
                 "SELECT cours.*, categories.Nom AS categorie_nom, utilisateurs.Nom AS nom_utilisateur, utilisateurs.Prenom AS prenom_utilisateur, utilisateurs.Photo AS photo_utilisateur 
                 FROM cours
                 JOIN categories ON cours.Categorie_id = categories.ID
-                JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID"
+                JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
+                Limit 4"
             );
             
     
