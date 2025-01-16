@@ -1,12 +1,12 @@
 <?php 
 
 require '../Classes/Database.php'; 
-require '../Classes/Visiteur.php'; 
+require '../Classes/Etudiant.php'; 
  
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
  
-    $client = new Visiteur($nom, $prenom, $role, $telephone, $email, $mot_de_passe, $photo);
+    $client = new Etudiant($nom, $prenom, $role, $telephone, $email, $mot_de_passe, $photo);
 
     $client->setNom($nom = $_POST['nom']);
     $client->setPrenom($prenom = $_POST['prenom']);
