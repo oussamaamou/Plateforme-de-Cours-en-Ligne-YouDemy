@@ -133,6 +133,8 @@ abstract class Utilisateur {
                         header("Location: ../templates/login.php");
                         exit();
                     }
+                } else {
+                    echo "Mot de passe incorrect";
                 }
             } else {
                 echo "Email non trouvé.";
