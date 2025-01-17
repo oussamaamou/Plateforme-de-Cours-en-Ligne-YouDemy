@@ -116,6 +116,21 @@ class Cours {
         }
     }
 
+    public function getCours($id){
+        try {
+            $stmt = $this->conn->getConnection()->prepare("SELECT * FROM cours WHERE ID = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $course = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $course;
+        }catch (PDOException $e) {
+            echo "Error fetching course: " . $e->getMessage();
+            return false;
+        }
+    }
+
 
 
 
