@@ -6,12 +6,18 @@ require '../Classes/Cours.php';
 session_start();
 
 if(!isset($_SESSION['ID'])){
-    header('location: ../public/login.php');
+    header('location: ../templates/login.php');
     exit();
 }
 
 $cours = new Cours("", "", "", "", "", "", "");
-$courses = $cours->getAllCours();
+
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+
+$coursPerPage = 4;
+
+$courses = $cours->getAllCours($page, $coursPerPage);
+
 
 ?>
 
@@ -27,7 +33,7 @@ $courses = $cours->getAllCours();
     
     <title>Les Cours</title>
 </head>
-<body class="bg-green-200">
+<body class="bg-gradient-to-t from-green-400 via-green-300 to-green-200 ">
 
     <header class="mb-[3rem]">
         <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
@@ -74,23 +80,22 @@ $courses = $cours->getAllCours();
 
                     <h2 class="text-xl font-semibold text-green-500 mb-4  mt-[3rem]">Catégorie</h2>
                     <p class="text-stone-700 font-semibold"><?php echo htmlspecialchars($course['categorie_nom']) ?></p>
-
-                    <button class="ml-[5.7rem] mt-[5rem] flex items-center rounded-md border border-green-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-green-600 hover:text-white hover:bg-green-800 hover:border-green-800 focus:text-white focus:bg-green-800 focus:border-green-800 active:border-green-800 active:text-white active:bg-green-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button"
-                        onclick="window.location.href='details_cours_etudiant.php?id=<?php echo $course['ID']; ?>'">
-                        Details
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 ml-1.5">
-                            <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
                     
+                    <a  href='details_cours_etudiant.php?id=<?php echo $course['ID']; ?>'>
+                        <button class="ml-[5.7rem] mt-[5rem] flex items-center rounded-md border border-green-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-green-600 hover:text-white hover:bg-green-800 hover:border-green-800 focus:text-white focus:bg-green-800 focus:border-green-800 active:border-green-800 active:text-white active:bg-green-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                            Details
+                            
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 ml-1.5">
+                                <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </a>
                 </div>
                 <div class="w-2/3 pl-8">
                     <p class="text-gray-700 font-semibold text-2xl dark:text-gray-300 mb-6"> <?php echo htmlspecialchars($course['Titre']) ?></p>
                     <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg lg:overflow-visible">
-                    <iframe width="450" height="350"
-                        src="<?php echo htmlspecialchars($course['Contenu']) ?>">
-                    </iframe>
+                    <img class="h-[25rem]"
+                        src="../assets/images/<?php echo($course['Thumbnail']) ?>">
                     </div>
                     <p class="text-gray-700 dark:text-gray-300 mb-6 mt-6">
                     <?php echo htmlspecialchars($course['Description']) ?>
@@ -116,18 +121,24 @@ $courses = $cours->getAllCours();
 
     </main>
 
-    <div class="bg-white p-4 flex items-center flex-wrap">
+    <div class="bg-white rounded-lg p-4 flex items-center flex-wrap">
         <nav aria-label="Page navigation">
             <ul class="inline-flex">
-            <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 rounded-l-lg focus:shadow-outline hover:bg-green-100">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
-            </li>
+            <a href="?page=<?php echo max($page - 1, 1); ?>">
+                <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 rounded-l-lg focus:shadow-outline hover:bg-green-100">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
+                </li>
+            </a>
+
             <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 focus:shadow-outline hover:bg-green-100">1</button></li>
             <li><button class="h-10 px-5 text-white transition-colors duration-150 bg-green-600 border border-r-0 border-green-600 focus:shadow-outline">2</button></li>
             <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 focus:shadow-outline hover:bg-green-100">3</button></li>
-            <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 bg-white rounded-r-lg focus:shadow-outline hover:bg-green-100">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
-            </li>
+           
+            <a href="?page=<?php echo $page + 1; ?>">
+                <li><button class="h-10 px-5 text-green-600 transition-colors duration-150 bg-white rounded-r-lg focus:shadow-outline hover:bg-green-100">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></button>
+                </li>
+            </a>
             </ul>
         </nav>
     </div>
