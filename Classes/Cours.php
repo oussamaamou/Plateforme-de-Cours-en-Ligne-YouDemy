@@ -95,19 +95,23 @@ class Cours {
         return $stmt->execute();
     }
 
-    public function getAllCours() {
+    public function getAllCours($page = 1, $coursPerPage = 4) {
         try {
+            $offset = ($page - 1) * $coursPerPage;
+    
             $stmt = $this->conn->getConnection()->prepare(
                 "SELECT cours.*, categories.Nom AS categorie_nom, utilisateurs.Nom AS nom_utilisateur, utilisateurs.Prenom AS prenom_utilisateur, utilisateurs.Photo AS photo_utilisateur 
                 FROM cours
                 JOIN categories ON cours.Categorie_id = categories.ID
                 JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
-                Limit 4"
+                LIMIT :offset, :coursPerPage"
             );
-            
+    
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':coursPerPage', $coursPerPage, PDO::PARAM_INT);
     
             $stmt->execute();
-            
+    
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
     
         } catch (PDOException $e) {
@@ -115,6 +119,7 @@ class Cours {
             return [];
         }
     }
+    
 
     public function getCours($id){
         try {
