@@ -104,6 +104,7 @@ class Cours {
                 FROM cours
                 JOIN categories ON cours.Categorie_id = categories.ID
                 JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
+                WHERE cours.Statut = 'Accepté'
                 LIMIT :offset, :coursPerPage"
             );
     
