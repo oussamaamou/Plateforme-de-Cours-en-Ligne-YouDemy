@@ -65,5 +65,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     </main>
 
+    <script>
+
+        function showAlert() {
+            const alert = document.getElementById('alert');
+
+            alert.style.display = 'block';
+
+            alert.style.opacity = 1;
+            alert.style.transition = 'opacity 1s ease-out';
+
+            setTimeout(() => {
+                alert.style.opacity = 0;
+            }, 2000);
+
+            setTimeout(() => {
+                alert.style.display = 'none'; 
+            }, 3000);
+        }
+
+        showAlert();
+
+    </script>
 </body>
 </html>
