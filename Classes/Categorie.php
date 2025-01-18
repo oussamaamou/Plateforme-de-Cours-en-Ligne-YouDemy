@@ -53,6 +53,22 @@ class Categorie {
         
     }
 
+    public function filtrerCours($coursFilter){
+        $sql = ("SELECT cours.*, categories.Nom AS categorie_nom, utilisateurs.Nom AS nom_utilisateur, utilisateurs.Prenom AS prenom_utilisateur, utilisateurs.Photo AS photo_utilisateur 
+                FROM cours
+                JOIN categories ON cours.Categorie_id = categories.ID
+                JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
+                WHERE categories.ID = :coursFilter AND cours.Statut = 'Accepté'"
+        );
+
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':coursFilter', $coursFilter);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 
 }
