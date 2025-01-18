@@ -9,7 +9,7 @@ abstract class Utilisateur {
     private $email;
     private $mot_de_passe;
     private $photo;
-    private $conn;
+    protected $conn;
 
 
     public function __construct($nom, $prenom, $role, $telephone, $email, $mot_de_passe, $photo) {
@@ -130,14 +130,19 @@ abstract class Utilisateur {
                         exit();
                     }
                     else{
-                        header("Location: ../templates/login.php");
-                        exit();
+                        echo '<div id="alert" class="fixed mx-[38rem] mt-[2rem] p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                        <span class="font-medium">Demande en traitement!</span> Attendez la confirmation de votre compte Enseignant.
+                        </div>';
                     }
                 } else {
-                    echo "Mot de passe incorrect";
+                    echo '<div id="alert" class="fixed mx-[38rem] mt-[2rem] p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <span class="font-medium">Mot de passe incorrect!</span> Essayez un autre mot de passe.
+                    </div>';
                 }
             } else {
-                echo "Email non trouvé.";
+                echo '<div id="alert" class="fixed mx-[38rem] mt-[2rem] p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <span class="font-medium">Email non trouvé!</span> Essayez un autre email.
+                    </div>';
             }
         } else {
             echo "Erreur lors de l'exécution de la requête.";
