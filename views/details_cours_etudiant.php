@@ -29,7 +29,7 @@ $course = $cours->getCours($courseId);
     
     <title>Les Cours</title>
 </head>
-<body class="bg-green-200">
+<body class="bg-gradient-to-t from-green-300 via-green-200 to-green-100">
 
     <header class="mb-[4rem]">
         <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
@@ -62,28 +62,73 @@ $course = $cours->getCours($courseId);
         </nav>
     </header>
 
-    <main>
+    <main class="overflow-hidden bg-white">
+        
+        <!-- Cours Details-->
+        <div >
+            <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-wrap -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-8">
+                <iframe width="725" height="450"
+                src="<?php echo htmlspecialchars($course['Contenu']) ?>">
+                </iframe>
+                </div>
 
-      <div class="bg-gray-100">
-        <div class="container mx-auto px-4 py-8">
-          <div class="flex flex-wrap -mx-4">
-            <!-- Product Images -->
-            <div class="w-full md:w-1/2 px-4 mb-8">
-            <iframe width="725" height="450"
-              src="<?php echo htmlspecialchars($course['Contenu']) ?>">
-            </iframe>
+                <div class="w-full md:w-1/2 px-4">
+                <h2 class="text-3xl font-bold mb-2"><?php echo htmlspecialchars($course['Titre']) ?></h2>
+                <p class="text-white-600 mb-4"><?php echo htmlspecialchars($course['Date_creation']) ?></p>
+
+                <p class="text-white-700 mb-6"><?php echo htmlspecialchars($course['Description']) ?></p>
+
+                </div>
             </div>
-
-            <div class="w-full md:w-1/2 px-4">
-              <h2 class="text-3xl font-bold mb-2"><?php echo htmlspecialchars($course['Titre']) ?></h2>
-              <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($course['Date_creation']) ?></p>
-
-              <p class="text-gray-700 mb-6"><?php echo htmlspecialchars($course['Description']) ?></p>
-
             </div>
-          </div>
         </div>
-      </div>
+        <hr class="h-[0.1rem] w-full mx-4 bg-white border-0 dark:bg-gray-700">
+        <section class="flex py-24 relative">
+        <button onclick="" class="block items-center px-1 -ml-1 flex-column">
+            <svg class="w-8 h-8 text-gray-600 cursor-pointer hover:text-purple-700" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5">
+                </path>
+            </svg>
+            <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"></span>
+        </button>
+        
+        <div class="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto">
+            
+            <div class="w-full flex-col justify-start items-start lg:gap-14 gap-7 inline-flex">
+                <h2 class="w-full text-gray-900 text-4xl font-bold font-manrope leading-normal">Comments</h2>
+                <div class="w-full flex-col justify-start items-start gap-5 flex">
+                    <div class="w-full rounded-3xl justify-start items-start gap-3.5 inline-flex">
+                        <img class="w-10 h-10 object-cover" src="https://pagedone.io/asset/uploads/1710225753.png" alt="John smith image" />
+                        <textarea name="" rows="5" class="w-full px-5 py-3 rounded-2xl border border-gray-300 shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] resize-none focus:outline-none placeholder-gray-400 text-gray-900 text-lg font-normal leading-7" placeholder="Write a your thoughts here...."></textarea>
+                    </div>
+                    <button class="px-5 py-2.5 bg-green-600 hover:bg-green-800 transition-all duration-700 ease-in-out rounded-xl shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] justify-center items-center flex">
+                        <span class="px-2 py-px text-white text-base font-semibold leading-relaxed">Post your comment</span>
+                    </button>
+                </div>
+                <div class="w-full flex-col justify-start items-start gap-8 flex">
+                    <div class="w-full pb-6 border-b border-white justify-start items-start gap-2.5 inline-flex">
+                        <img class="w-10 h-10 rounded-full object-cover" src="https://pagedone.io/asset/uploads/1710226776.png" alt="Mia Thompson image" />
+                        <div class="w-full flex-col justify-start items-start gap-3.5 inline-flex">
+                            <div class="w-full justify-start items-start flex-col flex gap-1">
+                                <div class="w-full justify-between items-start gap-1 inline-flex">
+                                    <h5 class="text-gray-900 text-sm font-semibold leading-snug">Mia Thompson</h5>
+                                    <span class="text-right text-gray-700 text-xs font-normal leading-5">12 hour ago</span>
+                                </div>
+                                <h5 class="text-gray-800 text-sm font-normal leading-snug">In vestibulum sed aliquet id turpis. Sagittis sed sed adipiscing velit habitant quam. Neque feugiat consectetur consectetur turpis.</h5>
+                            </div>
+                            
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </section>
+                                            
 
     </main>
 
@@ -91,29 +136,6 @@ $course = $cours->getCours($courseId);
 
 
 
-
-    <footer class="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
-        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-            <div class="sm:flex sm:items-center sm:justify-between">
-                <a class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                    <img src="../assets/images/YouDemy_Logo.png" class="mb-[-2rem] w-[7rem]" alt="Flowbite Logo" />
-                </a>
-                <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-                    <li>
-                        <a href="https://oussamaamou.github.io/PortFolio-HTML-CSS-JS/" target="_blank" class="hover:underline me-4 md:me-6">About</a>
-                    </li>
-                    <li>
-                        <a href="https://www.youcode.ma/" target="_blank" class="hover:underline me-4 md:me-6">Licensing</a>
-                    </li>
-                    <li>
-                        <a href="https://www.linkedin.com/in/oussama-amou-b71151337/" target="_blank" class="hover:underline">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="https://flowbite.com/" class="hover:underline">YouDemy Education</a>. Tous droits réservés.</span>
-        </div>
-    </footer>
 
 </body>
 </html>
