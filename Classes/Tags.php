@@ -38,5 +38,20 @@ class Tags {
         return $stmt->execute();
     }
 
+    public function getAllTags(){
+        try{ 
+            $sql = ("SELECT * FROM tags");
+            $stmt = $this->conn->getConnection()->prepare($sql);
+            
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+       }
+       catch(PDOException $e){
+        echo "Error: " . $e->getMessage();
+        return [];
+       }
+        
+    }
+
 
 }
