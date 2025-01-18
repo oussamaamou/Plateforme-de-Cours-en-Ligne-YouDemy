@@ -2,6 +2,7 @@
 
 require '../Classes/Database.php';
 require '../Classes/Administrateur.php';
+require '../Classes/Enseignant.php';
 
 
 session_start();
@@ -14,6 +15,7 @@ if(!isset($_SESSION['ID'])){
 $ID = $_SESSION['ID'];
 
 $infos = new Administrateur('','','','','','','');
+$enseignant = new Enseignant('','','','','','','');
 
 $profile = $infos->profileInfos($ID);
 
@@ -26,11 +28,11 @@ if ($profile) {
     $email = $profile['Email'];
 }
 
+$enseignants = $enseignant->getRefusedEnseignants();
 
 
 
 ?>
-
 
 
 
@@ -154,23 +156,24 @@ if ($profile) {
 							</tr>
 						</thead>
 						<tbody>
+                            <?php foreach($enseignants as $enseignant){ ?>
 							<tr>
 								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 									<div class="flex items-center">
 										<div class="flex-shrink-0 w-10 h-10">
 											<img class="w-full h-full rounded-full"
-                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
-                                                alt="" />
+                                                src="../assets/images/<?php echo $enseignant['Photo'] ?>"
+                                                alt="Photo de Profile" />
                                         </div>
 											<div class="ml-3">
 												<p class="text-gray-900 whitespace-no-wrap">
-													Vera Carpenter
+                                                    <?php echo htmlspecialchars($enseignant['Nom']) . ' ' . htmlspecialchars($enseignant['Prenom']) ?>
 												</p>
 											</div>
 										</div>
 								</td>
 								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-									<p class="text-gray-900 whitespace-no-wrap">Admin</p>
+									<p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($enseignant['Role']) ?></p>
 								</td>
 								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
 									<span
@@ -191,6 +194,7 @@ if ($profile) {
                                     </button>
                                 </td>
 							</tr>
+                            <?php } ?>
 						</tbody>
 					</table>
 				</div>
