@@ -2,6 +2,9 @@
 
 require '../classes/Database.php';
 require '../Classes/Cours.php';
+require '../Classes/Categorie.php';
+require '../Classes/Tags.php';
+require '../Classes/Etudiant.php';
 
 session_start();
 
@@ -11,13 +14,29 @@ if(!isset($_SESSION['ID'])){
 }
 
 $cours = new Cours("", "", "", "", "", "", "");
+$category = new Categorie(""); 
+$tagss = new Tags("");
+$etudiant = new Etudiant("","","","","","",""); 
 
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
 $coursPerPage = 4;
 
 $courses = $cours->getAllCours($page, $coursPerPage);
+$categories = $category->getAllCategorie();
+$tags = $tagss->getAllTags();
 
+$searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
+
+if ($searchTerm) {
+    $courses = $etudiant->rechercherCours($searchTerm);
+}
+
+$categoryFilter = isset($_POST['category_filter']) ? $_POST['category_filter'] : '';
+
+if ($categoryFilter) {
+    $courses = $category->filtrerCours($categoryFilter);
+}
 
 ?>
 
@@ -33,7 +52,7 @@ $courses = $cours->getAllCours($page, $coursPerPage);
     
     <title>Les Cours</title>
 </head>
-<body class="bg-gradient-to-t from-green-400 via-green-300 to-green-200 ">
+<body class="bg-gradient-to-t from-green-400 via-green-300 to-green-200">
 
     <header class="mb-[3rem]">
         <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
@@ -66,11 +85,57 @@ $courses = $cours->getAllCours($page, $coursPerPage);
         </nav>
     </header>
 
+    <!-- Filtrage les Resultats-->
+    <form method="POST" class="flex rounded-md border-2 border-green-400 mt-[2rem] overflow-hidden max-w-md mx-auto">
+        <input type="text" name="search" placeholder="Rechercher quelque chose..."
+        class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3" />
+        <button type='submit' class="flex items-center justify-center bg-green-400  px-5">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
+            <path
+            d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z">
+            </path>
+        </svg>
+        </button>
+    </form>
 
+    <div class="grid grid-cols-2">
+
+        <form method="POST" class="flex rounded-md border-2 border-green-400 mt-[2rem] overflow-hidden max-w-md mx-auto">
+            <select name="category_filter" class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3">
+                <option value="">Filtrer par catégorie</option>
+                <?php
+                foreach ($categories as $categorie) {
+                    echo "<option value='" . $categorie['ID'] . "'>" . htmlspecialchars($categorie['Nom']) . "</option>";
+                }
+                ?>
+            </select>
+            <button type='submit' class="flex items-center justify-center bg-green-400 px-5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
+                    <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
+                </svg>
+            </button>
+        </form>
+
+        <form method="POST" class="flex rounded-md border-2 border-green-400 mt-[2rem] overflow-hidden max-w-md mx-auto">
+            <select name="tag_filter" class="w-full outline-none bg-white text-gray-600 text-sm px-4 py-3">
+                <option value="">Filtrer par tag</option>
+                <?php
+                foreach ($tags as $tag) {
+                    echo "<option value='" . $tag['ID'] . "'>" . htmlspecialchars($tag['Nom']) . "</option>";
+                }
+                ?>
+            </select>
+            <button type='submit' class="flex items-center justify-center bg-green-400 px-5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192.904 192.904" width="16px" class="fill-white">
+                    <path d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"></path>
+                </svg>
+            </button>
+        </form>
+    </div>
     <main class="overflow-hidden">  
         <div class="grid grid-cols-2 gap-4">
         <?php foreach($courses as $course) { ?>
-        <div class="scale-[0.95] mt-[4rem] bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full p-4 transition-all duration-300 animate-fade-in pt-[3.5rem]">
+        <div class="scale-[0.9] mt-[4rem] bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full p-4 transition-all duration-300 animate-fade-in pt-[3.5rem]">
             <div class="flex flex-row">
                 <div class="w-1/3 text-center mb-0">
                     <img src="../assets/images/<?php echo $course['photo_utilisateur'] ?>" alt="Profile Picture" class="rounded-full w-48 h-48 mx-auto mb-4 border-4 border-green-500 transition-transform duration-300 hover:scale-105">
