@@ -96,7 +96,7 @@ $courses = $cours->getAllCours($page, $coursPerPage);
                             <a href="cours_enseignant.php" class="block py-2 pr-4 pl-3 text-stone-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Mes Cours</a>
                         </li>
                         <li>
-                            <a href="article_auteur.php" class="block py-2 pr-4 pl-3 text-stone-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Articles</a>
+                            <a href="" class="block py-2 pr-4 pl-3 text-stone-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Membres</a>
                         </li>
                     </ul>
                 </div>
@@ -172,6 +172,7 @@ $courses = $cours->getAllCours($page, $coursPerPage);
                     <h2 class="text-xl font-semibold text-green-500 mb-4  mt-[3rem]">Catégorie</h2>
                     <p class="text-stone-700 font-semibold"><?php echo htmlspecialchars($course['categorie_nom']) ?></p>
 
+                    <a  href='details_cours_enseignant.php?id=<?php echo $course['ID']; ?>'>
                     <button class="ml-[5.7rem] mt-[5rem] flex items-center rounded-md border border-green-300 py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-green-600 hover:text-white hover:bg-green-800 hover:border-green-800 focus:text-white focus:bg-green-800 focus:border-green-800 active:border-green-800 active:text-white active:bg-green-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
                         Details
                         
@@ -179,7 +180,7 @@ $courses = $cours->getAllCours($page, $coursPerPage);
                             <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    
+                    </a>
                 </div>
                 <div class="md:w-2/3 md:pl-8">
                     <p class="text-gray-700 font-semibold text-2xl dark:text-gray-300 mb-6"> <?php echo htmlspecialchars($course['Titre']) ?></p>
