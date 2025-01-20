@@ -94,32 +94,6 @@ class Cours {
 
         return $stmt->execute();
     }
-
-    public function getAllCours($page = 1, $coursPerPage = 4) {
-        try {
-            $offset = ($page - 1) * $coursPerPage;
-    
-            $stmt = $this->conn->getConnection()->prepare(
-                "SELECT cours.*, categories.Nom AS categorie_nom, utilisateurs.Nom AS nom_utilisateur, utilisateurs.Prenom AS prenom_utilisateur, utilisateurs.Photo AS photo_utilisateur 
-                FROM cours
-                JOIN categories ON cours.Categorie_id = categories.ID
-                JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
-                WHERE cours.Statut = 'Accepté'
-                LIMIT :offset, :coursPerPage"
-            );
-    
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->bindValue(':coursPerPage', $coursPerPage, PDO::PARAM_INT);
-    
-            $stmt->execute();
-    
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            return [];
-        }
-    }
     
 
     public function getCours($id){
@@ -133,6 +107,21 @@ class Cours {
             return $course;
         }catch (PDOException $e) {
             echo "Error fetching course: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateCoursStatut($cours_id, $new_statut) {
+        try {
+            $sql = "UPDATE cours SET Statut = :statut WHERE ID = :cours_id";
+            $stmt = $this->conn->getConnection()->prepare($sql);
+
+            $stmt->bindParam(':statut', $new_statut, PDO::PARAM_STR);
+            $stmt->bindParam(':cours_id', $cours_id, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
             return false;
         }
     }
