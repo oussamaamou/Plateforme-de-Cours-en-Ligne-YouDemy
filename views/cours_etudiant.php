@@ -14,6 +14,7 @@ if(!isset($_SESSION['ID'])){
 }
 
 $cours = new Cours("", "", "", "", "", "", "");
+$user = new Etudiant("", "", "", "", "", "", "");
 $category = new Categorie(""); 
 $tagss = new Tags("");
 $etudiant = new Etudiant("","","","","","",""); 
@@ -22,7 +23,7 @@ $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
 $coursPerPage = 4;
 
-$courses = $cours->getAllCours($page, $coursPerPage);
+$courses = $user->consulterAllCours($page, $coursPerPage);
 $categories = $category->getAllCategorie();
 $tags = $tagss->getAllTags();
 
