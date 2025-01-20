@@ -117,7 +117,7 @@ abstract class Utilisateur {
                 if($this->email === $gtemail && password_verify($mot_de_passe, $gtmot_de_passe)) {
                     $_SESSION['ID'] = $gtID;
 
-                    if($gtrole === 'Etudiant'){
+                    if($gtrole === 'Etudiant' && $gtetat !== 'Refuse'){
                         header("Location: ../views/profile_etudiant.php");
                         exit();
                     }
