@@ -4,8 +4,8 @@ include_once 'Utilisateur.php';
 
 class Enseignant extends Utilisateur {
 
-    public function getRefusedEnseignants() {
-        $sql = "SELECT * FROM utilisateurs WHERE Role = 'Enseignant' AND Etat = 'refuse'";
+    public function getDemandeEnseignants() {
+        $sql = "SELECT * FROM utilisateurs WHERE Role = 'Enseignant' AND Etat = 'En Attente'";
 
         $stmt = $this->conn->getConnection()->prepare($sql);
         
@@ -15,5 +15,20 @@ class Enseignant extends Utilisateur {
 
         return $enseignants;
     }
+
+    public function getAllEnseignants() {
+        $sql = "SELECT * FROM utilisateurs WHERE Role = 'Enseignant' AND Etat = 'Valide'";
+
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        
+        $stmt->execute();
+
+        $enseignants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $enseignants;
+    }
+
+
+
     
 }
