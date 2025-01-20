@@ -2,6 +2,8 @@
 
 require '../classes/Database.php';
 require '../Classes/Cours.php';
+require '../Classes/Etudiant.php';
+require '../Classes/Commentaire.php';
 
 session_start();
 
@@ -9,11 +11,44 @@ if(!isset($_SESSION['ID'])){
     header('location: ../templates/login.php');
     exit();
 }
+$ID_Etudiant = $_SESSION['ID'];
 
 $courseId = intval($_GET['id']);
 
 $cours = new Cours("", "", "", "", "", "", "");
+$etudiant = new Etudiant('','','','','','','');
+$comment = new Commentaire($ID_Etudiant, $courseId, '');
+
 $course = $cours->getCours($courseId);
+$profile = $etudiant->profileInfos($ID_Etudiant);
+
+
+if ($profile) {
+    $nom = $profile['Nom'];
+    $prenom = $profile['Prenom'];
+    $photo = $profile['Photo'];
+    $role = $profile['Role'];
+    $telephone = $profile['Telephone'];
+    $email = $profile['Email'];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cours_inscription'])) {
+    $ID_cours = $_POST['ID_cours'] ?? null;
+    if ($ID_cours) {
+        $etudiant->coursInscription($ID_Etudiant, $ID_cours);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_comment'])) {
+   
+    $comment->setDescription($description = $_POST['description']);
+
+    $comment->addComment($ID_Etudiant, $courseId, $description);
+
+}
+
+$commentss = $comment->getCommentsByCours();
+$inscrit = $etudiant->inscriptionCours($ID_Etudiant, $courseId);
 
 ?>
 
@@ -62,69 +97,101 @@ $course = $cours->getCours($courseId);
         </nav>
     </header>
 
+    <!-- Inscription -->
+    <form id="coursInscription" method="POST" action="">
+            <input type="hidden" name="cours_inscription" value="1">
+            <input type="hidden" name="ID_cours" id="ID_cours" value="">
+        </form>
+
     <main class="overflow-hidden bg-white">
+
+        
         
         <!-- Cours Details-->
         <div >
             <div class="container mx-auto px-4 py-8">
             <div class="flex flex-wrap -mx-4">
                 <div class="w-full md:w-1/2 px-4 mb-8">
-                <iframe width="725" height="450"
-                src="<?php echo htmlspecialchars($course['Contenu']) ?>">
-                </iframe>
+                    <?php if (!$inscrit): ?>
+                    <div class="p-4 mt-[8rem] text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                        <div class="pl-[15rem] flex items-center">
+                            <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                            <span class="sr-only">Info</span>
+                            <h3 class="text-lg font-medium">Alerte Informative</h3>
+                        </div>
+                        <div class="mt-2 mb-4 pl-[2rem] text-sm">
+                            Vous devez vous inscrire au cours pour pouvoir accéder au contenu et interagir avec celui-ci.
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($inscrit): ?>
+                    <iframe width="725" height="450"
+                    src="<?php echo htmlspecialchars($course['Contenu']) ?>">
+                    </iframe>
+                    <?php endif; ?>
                 </div>
 
                 <div class="w-full md:w-1/2 px-4">
-                <h2 class="text-3xl font-bold mb-2"><?php echo htmlspecialchars($course['Titre']) ?></h2>
-                <p class="text-white-600 mb-4"><?php echo htmlspecialchars($course['Date_creation']) ?></p>
+                <?php if (!$inscrit): ?>
+                <button onclick="coursInscription(<?php echo $course['ID'] ?>)" type='button' class='ml-[32rem] py-2.5 px-6 text-sm rounded-lg bg-red-500 text-white cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-red-700'>S'Inscrire</button>
+                <?php endif; ?>
+                <h1 class="text-5xl font-bold leading-tight my-6 text-gray-800 dark:text-gray-100 underline underline-offset-3 decoration-6 decoration-green-200"><?php echo htmlspecialchars($course['Titre']) ?></h1>
 
-                <p class="text-white-700 mb-6"><?php echo htmlspecialchars($course['Description']) ?></p>
+                <span class="bg-green-100 text-green-800 text-sm font-semibold me-2 px-3.5 py-1.5 rounded dark:bg-green-900 dark:text-green-300"><?php echo htmlspecialchars($course['Date_creation']) ?></span>
+                <p class="text-gray-500 text-lg dark:text-gray-400 my-8"><?php echo htmlspecialchars($course['Description']) ?></p>
+                <span class="bg-gray-100 text-gray-800 text-base font-medium me-2 px-3.5 py-1.5 rounded dark:bg-gray-700 dark:text-gray-300"><?php echo htmlspecialchars($course['Type']) ?></span>
 
                 </div>
+                
             </div>
+            
             </div>
         </div>
-        <hr class="h-[0.1rem] w-full mx-4 bg-white border-0 dark:bg-gray-700">
-        <section class="flex py-24 relative">
-        <button onclick="" class="block items-center px-1 -ml-1 flex-column">
-            <svg class="w-8 h-8 text-gray-600 cursor-pointer hover:text-purple-700" fill="none"
-                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5">
-                </path>
-            </svg>
-            <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"></span>
-        </button>
+        
+        <hr class="h-[0.1rem] w-[20rem]] mx-10 bg-green-200 border-0 dark:bg-gray-700">
+        <section class="py-24 relative">
         
         <div class="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto">
             
             <div class="w-full flex-col justify-start items-start lg:gap-14 gap-7 inline-flex">
                 <h2 class="w-full text-gray-900 text-4xl font-bold font-manrope leading-normal">Comments</h2>
-                <div class="w-full flex-col justify-start items-start gap-5 flex">
+                <?php if ($inscrit): ?>
+                <form method="POST" class="w-full flex-col justify-start items-start gap-5 flex">
                     <div class="w-full rounded-3xl justify-start items-start gap-3.5 inline-flex">
-                        <img class="w-10 h-10 object-cover" src="https://pagedone.io/asset/uploads/1710225753.png" alt="John smith image" />
-                        <textarea name="" rows="5" class="w-full px-5 py-3 rounded-2xl border border-gray-300 shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] resize-none focus:outline-none placeholder-gray-400 text-gray-900 text-lg font-normal leading-7" placeholder="Write a your thoughts here...."></textarea>
+                        <img class="w-11 h-11 rounded-full object-cover" src="../assets//images/<?php echo $photo ?>" alt="John smith image" />
+                        <input type="hidden" name="add_comment" value="1">
+                        <input type="text" name="description" rows="5" class="w-full h-[6rem] px-5 py-3 rounded-2xl border border-gray-300 shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] resize-none focus:outline-none placeholder-gray-400 text-gray-900 text-base font-normal leading-7" placeholder="Écrivez vos pensées ici....">
                     </div>
-                    <button class="px-5 py-2.5 bg-green-600 hover:bg-green-800 transition-all duration-700 ease-in-out rounded-xl shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] justify-center items-center flex">
-                        <span class="px-2 py-px text-white text-base font-semibold leading-relaxed">Post your comment</span>
+                    <button class="ml-[4rem] px-2.5 py-2.5 bg-green-500 hover:bg-green-600 transition-all duration-700 ease-in-out rounded-full shadow-[0px_1px_2px_0px_rgba(16,_24,_40,_0.05)] justify-center items-center flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20" fill="none">
+                            <path d="M11.3011 8.69906L8.17808 11.8221M8.62402 12.5909L8.79264 12.8821C10.3882 15.638 11.1859 17.016 12.2575 16.9068C13.3291 16.7977 13.8326 15.2871 14.8397 12.2661L16.2842 7.93238C17.2041 5.17273 17.6641 3.79291 16.9357 3.06455C16.2073 2.33619 14.8275 2.79613 12.0679 3.71601L7.73416 5.16058C4.71311 6.16759 3.20259 6.6711 3.09342 7.7427C2.98425 8.81431 4.36221 9.61207 7.11813 11.2076L7.40938 11.3762C7.79182 11.5976 7.98303 11.7083 8.13747 11.8628C8.29191 12.0172 8.40261 12.2084 8.62402 12.5909Z"
+                                stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
                     </button>
-                </div>
-                <div class="w-full flex-col justify-start items-start gap-8 flex">
+                </form>
+                <?php endif; ?>
+
+                <?php foreach($commentss as $comments) { ?>
+                <div class="w-75 flex-col justify-start items-start gap-8 flex">
                     <div class="w-full pb-6 border-b border-white justify-start items-start gap-2.5 inline-flex">
-                        <img class="w-10 h-10 rounded-full object-cover" src="https://pagedone.io/asset/uploads/1710226776.png" alt="Mia Thompson image" />
+                        <img class="w-10 h-10 rounded-full object-cover" src="../assets/images/<?php echo $comments['etudiant_photo'] ?>" alt="Photo de Profile" />
                         <div class="w-full flex-col justify-start items-start gap-3.5 inline-flex">
                             <div class="w-full justify-start items-start flex-col flex gap-1">
                                 <div class="w-full justify-between items-start gap-1 inline-flex">
-                                    <h5 class="text-gray-900 text-sm font-semibold leading-snug">Mia Thompson</h5>
-                                    <span class="text-right text-gray-700 text-xs font-normal leading-5">12 hour ago</span>
+                                    <h5 class="text-gray-900 text-sm font-semibold leading-snug mr-[60rem]"><?php echo htmlspecialchars($comments['etudiant_nom']) . ' ' . htmlspecialchars($comments['etudiant_prenom']) ?></h5>
+                                    <span class="text-right text-gray-700 text-xs font-normal leading-5"><?php echo htmlspecialchars($comments['commentaire_date']) ?></span>
                                 </div>
-                                <h5 class="text-gray-800 text-sm font-normal leading-snug">In vestibulum sed aliquet id turpis. Sagittis sed sed adipiscing velit habitant quam. Neque feugiat consectetur consectetur turpis.</h5>
+                                <h5 class="text-gray-800 text-sm font-normal leading-snug"><?php echo htmlspecialchars($comments['commentaire_description']) ?></h5>
                             </div>
                             
                         </div>
                     </div>
                    
                 </div>
+                <?php } ?>
             </div>
         </div>
     </section>
@@ -136,6 +203,11 @@ $course = $cours->getCours($courseId);
 
 
 
-
+    <script>
+        function coursInscription(ID_cours) {
+        document.getElementById("ID_cours").value = ID_cours;
+        document.getElementById("coursInscription").submit();
+        };
+    </script>
 </body>
 </html>
