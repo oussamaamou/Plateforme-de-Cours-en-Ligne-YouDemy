@@ -136,7 +136,7 @@ $inscrit = $etudiant->inscriptionCours($ID_Etudiant, $courseId);
 
                 <div class="w-full md:w-1/2 px-4">
                 <?php if (!$inscrit): ?>
-                <button onclick="coursInscription(<?php echo $course['ID'] ?>)" type='button' class='ml-[32rem] py-2.5 px-6 text-sm rounded-lg bg-red-500 text-white cursor-pointer font-semibold text-center shadow-xs transition-all duration-500 hover:bg-red-700'>S'Inscrire</button>
+                <button onclick="coursInscription(<?php echo $course['ID'] ?>)" type='button' class='cursor-pointer ml-[32rem] py-2.5 px-6 text-sm rounded-lg bg-red-500 text-white font-semibold text-center shadow-xs transition-all duration-500 hover:bg-red-700'>S'Inscrire</button>
                 <?php endif; ?>
                 <h1 class="text-5xl font-bold leading-tight my-6 text-gray-800 dark:text-gray-100 underline underline-offset-3 decoration-6 decoration-green-200"><?php echo htmlspecialchars($course['Titre']) ?></h1>
 
