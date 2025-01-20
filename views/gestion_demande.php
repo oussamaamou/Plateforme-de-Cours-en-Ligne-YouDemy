@@ -28,7 +28,21 @@ if ($profile) {
     $email = $profile['Email'];
 }
 
-$enseignants = $enseignant->getRefusedEnseignants();
+$enseignants = $enseignant->getDemandeEnseignants();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accepter_demande'])) {
+    $ID_enseignant = $_POST['ID_accepter_demande'] ?? null;
+    if ($ID_enseignant) {
+        $infos->accepterEnseignant($ID_enseignant);
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refuser_demande'])) {
+    $ID_enseignant = $_POST['ID_refuser_demande'] ?? null;
+    if ($ID_enseignant) {
+        $infos->refuserEnseignant($ID_enseignant);
+    }
+}
 
 
 
@@ -118,92 +132,117 @@ $enseignants = $enseignant->getRefusedEnseignants();
             </div>
         </header>
 
+        <!-- Accepter -->
+        <form id="accepterDemande" method="POST" action="">
+            <input type="hidden" name="accepter_demande" value="1">
+            <input type="hidden" name="ID_accepter_demande" id="ID_accepter_demande" value="">
+        </form>
+
+        <!-- Refuser -->
+        <form id="refuserDemande" method="POST" action="">
+            <input type="hidden" name="refuser_demande" value="1">
+            <input type="hidden" name="ID_refuser_demande" id="ID_refuser_demande" value="">
+        </form>
 
         <main>
 
-        <div class="bg-white p-8 rounded-md w-full">
-	<div class="items-center justify-between pb-6">
-		
-        <h2 class="text-gray-600 font-semibold">Les Enseignants</h2>
-        <span class="text-xs">Tous les Enseignants</span>
-		
-		<div>
-			<div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-				<div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
-					<table class="min-w-full leading-normal">
-						<thead>
-							<tr>
-								<th
-									class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-									Nom
-								</th>
-								<th
-									class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-									Role
-								</th>
-								<th
-									class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-									Status
-								</th>
-                                <th
-									class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-									Action
-								</th>
-                                <th
-									class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-									Action
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-                            <?php foreach($enseignants as $enseignant){ ?>
-							<tr>
-								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-									<div class="flex items-center">
-										<div class="flex-shrink-0 w-10 h-10">
-											<img class="w-full h-full rounded-full"
-                                                src="../assets/images/<?php echo $enseignant['Photo'] ?>"
-                                                alt="Photo de Profile" />
-                                        </div>
-											<div class="ml-3">
-												<p class="text-gray-900 whitespace-no-wrap">
-                                                    <?php echo htmlspecialchars($enseignant['Nom']) . ' ' . htmlspecialchars($enseignant['Prenom']) ?>
-												</p>
-											</div>
-										</div>
-								</td>
-								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-									<p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($enseignant['Role']) ?></p>
-								</td>
-								<td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-									<span
-                                        class="relative inline-block px-3 py-1 font-semibold text-gray-900 leading-tight">
-                                        <span aria-hidden
-                                            class="absolute inset-0 bg-gray-200 opacity-50 rounded-full"></span>
-									<span class="relative">En Attente</span>
-									</span>
-								</td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-red-100 active:bg-red-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                                        Refuser
-                                    </button>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <button class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-green-100 active:bg-green-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                                        Accepter
-                                    </button>
-                                </td>
-							</tr>
-                            <?php } ?>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="bg-white p-8 rounded-md w-full">
+                <div class="items-center justify-between pb-6">
+                
+                <h2 class="text-gray-600 font-semibold">Les Enseignants</h2>
+                <span class="text-xs">Tous les demandes des Enseignants</span>
+                
+                <div>
+                    <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                        <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                            <table class="min-w-full leading-normal">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Nom
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Role
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Action
+                                        </th>
+                                        <th
+                                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($enseignants as $enseignant){ ?>
+                                    <tr>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 w-10 h-10">
+                                                    <img class="w-full h-full rounded-full"
+                                                        src="../assets/images/<?php echo $enseignant['Photo'] ?>"
+                                                        alt="Photo de Profile" />
+                                                </div>
+                                                    <div class="ml-3">
+                                                        <p class="text-gray-900 whitespace-no-wrap">
+                                                            <?php echo htmlspecialchars($enseignant['Nom']) . ' ' . htmlspecialchars($enseignant['Prenom']) ?>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($enseignant['Role']) ?></p>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <span
+                                                class="relative inline-block px-3 py-1 font-semibold text-gray-900 leading-tight">
+                                                <span aria-hidden
+                                                    class="absolute inset-0 bg-gray-200 opacity-50 rounded-full"></span>
+                                            <span class="relative"><?php echo htmlspecialchars($enseignant['Etat']) ?></span>
+                                            </span>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <button onclick="refuserDemande(<?php echo $enseignant['ID']; ?>)" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-red-100 active:bg-red-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                                                Refuser
+                                            </button>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <button onclick="accepterDemande(<?php echo $enseignant['ID']; ?>)" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-green-100 active:bg-green-300 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                                                Accepter
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
     </div>
+
+    <script>
+
+        function accepterDemande(ID_accepter_demande) {
+        document.getElementById("ID_accepter_demande").value = ID_accepter_demande;
+        document.getElementById("accepterDemande").submit();
+        };
+
+        function refuserDemande(ID_refuser_demande) {
+        document.getElementById("ID_refuser_demande").value = ID_refuser_demande;
+        document.getElementById("refuserDemande").submit();
+        };
+
+    </script>
 
 </body>
 </html>
