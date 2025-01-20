@@ -21,5 +21,41 @@ class Etudiant extends Utilisateur {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAllEtudiants() {
+        $sql = "SELECT * FROM utilisateurs WHERE Role = 'Etudiant'";
+
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        
+        $stmt->execute();
+
+        $enseignants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $enseignants;
+    }
+
+    public function coursInscription($ID_etudiant, $ID_cours){
+        $sql = ("INSERT INTO inscriptions (ID_etudiant, ID_cours) VALUES (:ID_etudiant, :ID_cours)");
+
+        $stmt = $this->conn->getConnection()->prepare($sql);
+
+        $stmt->bindParam('ID_etudiant', $ID_etudiant, PDO::PARAM_INT);
+        $stmt->bindParam('ID_cours', $ID_cours, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function inscriptionCours($ID_etudiant, $ID_cours) {
+        $sql = "SELECT COUNT(*) FROM inscriptions WHERE ID_etudiant = :ID_etudiant AND ID_cours = :ID_cours";
+        
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        
+        $stmt->bindParam(':ID_etudiant', $ID_etudiant, PDO::PARAM_INT);
+        $stmt->bindParam(':ID_cours', $ID_cours, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        
+        return $stmt->fetchColumn() > 0;
+    }
     
 }
