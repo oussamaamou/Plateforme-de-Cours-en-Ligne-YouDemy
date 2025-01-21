@@ -126,6 +126,47 @@ class Cours {
         }
     }
 
+    public function supprimerCours($coursId) {
+
+        $sql = "DELETE FROM inscriptions WHERE ID_cours = :coursId";
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':coursId', $coursId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $sql = "DELETE FROM cours WHERE ID = :coursId";
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':coursId', $coursId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function modifierCours($id) {
+        $sql = "UPDATE cours 
+                SET Titre = :titre, 
+                    Description = :description, 
+                    Type = :type, 
+                    Contenu = :contenu, 
+                    Thumbnail = :thumbnail, 
+                    Enseignant_id = :Enseignant_id, 
+                    Categorie_id = :Categorie_id 
+                WHERE ID = :id";
+        
+        $stmt = $this->conn->getConnection()->prepare($sql);
+    
+        $stmt->bindParam(':titre', $this->titre, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $this->description, PDO::PARAM_STR);
+        $stmt->bindParam(':type', $this->type, PDO::PARAM_STR);
+        $stmt->bindParam(':contenu', $this->contenu, PDO::PARAM_STR);
+        $stmt->bindParam(':thumbnail', $this->thumbnail, PDO::PARAM_LOB);
+        $stmt->bindParam(':Enseignant_id', $this->ID_enseignant, PDO::PARAM_INT);
+        $stmt->bindParam(':Categorie_id', $this->ID_categorie, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    
+        return $stmt->execute();
+    }
+    
+    
+
 
 
 
