@@ -54,6 +54,62 @@ class Enseignant extends Utilisateur {
         }
     }
 
+    public function ttlInscritsCours($id_cours) {
+        $sql = "SELECT COUNT(u.ID) 
+                FROM utilisateurs u
+                JOIN inscriptions i ON u.ID = i.ID_etudiant
+                WHERE i.ID_cours = :id_cours AND u.Role = 'Etudiant'";
+    
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':id_cours', $id_cours, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchColumn();
+    }
+
+    public function ttlInscritsEnseignant($id_enseignant) {
+        $sql = "SELECT COUNT(u.ID) 
+                FROM utilisateurs u
+                JOIN inscriptions i ON u.ID = i.ID_etudiant
+                JOIN cours c ON i.ID_cours = c.ID
+                WHERE c.Enseignant_id = :id_enseignant AND u.Role = 'Etudiant'";
+    
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchColumn();
+    }
+
+    public function ttlCoursEnseignant($id_enseignant) {
+        $sql = "SELECT COUNT(*) 
+                FROM cours 
+                WHERE Enseignant_id = :id_enseignant AND Statut = 'Accepté'";
+    
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchColumn();
+    }
+
+    public function etudiantsInscritsCours($id_enseignant) {
+        $sql = "SELECT DISTINCT u.Photo, u.Nom, u.Prenom, u.Role 
+                FROM utilisateurs u
+                JOIN inscriptions i ON u.ID = i.ID_etudiant
+                JOIN cours c ON i.ID_cours = c.ID
+                WHERE c.Enseignant_id = :id_enseignant AND u.Role = 'Etudiant'";
+    
+        $stmt = $this->conn->getConnection()->prepare($sql);
+        $stmt->bindParam(':id_enseignant', $id_enseignant, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    
+    
+
 
 
     
