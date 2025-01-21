@@ -57,5 +57,35 @@ class Etudiant extends Utilisateur {
         
         return $stmt->fetchColumn() > 0;
     }
+
+    public function coursRejoint($ID_etudiant, $page = 1, $coursPerPage = 4) { 
+        try {
+            $offset = ($page - 1) * $coursPerPage;
+        
+            $stmt = $this->conn->getConnection()->prepare(
+                "SELECT cours.*, categories.Nom AS categorie_nom, utilisateurs.Nom AS nom_utilisateur, 
+                        utilisateurs.Prenom AS prenom_utilisateur, utilisateurs.Photo AS photo_utilisateur 
+                FROM cours
+                JOIN categories ON cours.Categorie_id = categories.ID
+                JOIN utilisateurs ON cours.Enseignant_id = utilisateurs.ID
+                JOIN inscriptions ON cours.ID = inscriptions.ID_cours
+                WHERE cours.Statut = 'Accepté' AND inscriptions.ID_etudiant = :ID_etudiant
+                LIMIT :offset, :coursPerPage"
+            );
+        
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindParam(':coursPerPage', $coursPerPage, PDO::PARAM_INT);
+            $stmt->bindParam(':ID_etudiant', $ID_etudiant, PDO::PARAM_INT);
+        
+            $stmt->execute();
+        
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
+        }
+    }
+    
     
 }
